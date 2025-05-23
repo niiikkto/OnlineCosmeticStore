@@ -278,7 +278,35 @@ class Program
 
     public static void ConsoleAdmin()
     {
-
+        Console.WriteLine("Выберите действие администратора:");
+        Console.WriteLine("1 - Просмотреть все товары");
+        Console.WriteLine("2 - Просмотреть все заказы");
+        Console.WriteLine("3 - Просмотреть всех продавцов");
+        Console.WriteLine("4 - Просмотреть всех покупателей");
+        Console.WriteLine("5 - Удалить товар");
+        Console.WriteLine("6 - Удалить заказ");
+        Console.WriteLine("7 - Удалить продавца");
+        Console.WriteLine("8 - Удалить покупателя");
+        int chose = int.Parse(Console.ReadLine());
+        switch (chose)
+        {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+        }
     }
 
     public static void ConsoleSeller()
