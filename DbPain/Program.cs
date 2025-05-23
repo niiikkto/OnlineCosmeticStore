@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
@@ -246,10 +245,119 @@ class Program
 
         Console.WriteLine("Тестовые данные успешно сгенерированы!");
     }
+    
+
+    public static int ConsoleRights(int role, string name)
+    {
+        switch (role)
+        {
+            case 1:
+                if (true)
+                {
+                    return 1;
+                }
+                break;
+            case 2:
+                if (true)
+                {
+                    return 2;
+                }
+                break;
+            case 3:
+                if (true)
+                {
+                    return 3;
+                }
+                break;
+        }
+        return 0;
+    }
+
+
+
+
+    public static void ConsoleAdmin()
+    {
+
+    }
+
+    public static void ConsoleSeller()
+    {
+        Console.WriteLine("Выбертье действие за поставшика:");
+        Console.WriteLine("1 - Добавить товар на склад");
+        Console.WriteLine("2 - Убрать товар со склада");
+        Console.WriteLine("3 - Узнать сови данные");
+        Console.WriteLine("4 - Поменять данные совего товара");
+        int chose = int.Parse(Console.ReadLine());
+        switch (chose)
+        {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
+    }
+
+    public static void ConsoleCustomer()
+    {
+        Console.WriteLine("Выбертье действие за пользователя:");
+        Console.WriteLine("1 - Добавить товар в корзину");
+        Console.WriteLine("2 - Убрать товар с корзины");
+        Console.WriteLine("3 - Узнать сови данные");
+        Console.WriteLine("4 - Оформить заказать товар");
+        Console.WriteLine("5 - Отменить заказ");
+        int chose = int.Parse(Console.ReadLine());
+        switch (chose)
+        {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+    }
+
+
     public static void Main()
     {
-        var context = new ShopDbContext();
-        context.Database.EnsureCreated();
-        GenerateTestData(context);
+        //var context = new ShopDbContext();
+        //context.Database.EnsureCreated();
+        //GenerateTestData(context);
+        int isValidRole = 0;
+        int role;
+        string name;
+        Console.WriteLine("Выберите роль:");
+        Console.WriteLine("1 - Админ");
+        Console.WriteLine("2 - Пользователь");
+        Console.WriteLine("3 - Продавец");
+        while (isValidRole == 0)
+        {
+            Console.WriteLine("Введите роль:");
+            role = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите имя/название организации: ");
+            name = Console.ReadLine();
+            isValidRole = ConsoleRights(role, name);
+        }
+        switch (isValidRole)
+        {
+            case 1:
+                ConsoleAdmin();
+                break;
+            case 2:
+                ConsoleCustomer();
+                break;
+            case 3:
+                ConsoleSeller();
+                break;
+        }
     }
 }
