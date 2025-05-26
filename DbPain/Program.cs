@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DbPain.db_controler;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -74,7 +75,7 @@ public class Order
     public PaymentMethod PaymentMethod { get; set; }
 }
 
-public enum Rights
+public enum RightsList
 {
     ProductManageMent,
     OrderManageMent,
@@ -136,9 +137,9 @@ class Program
         // Генерация администраторов
         var admins = new[]
         {
-            new Admin { Name = "Иван Иванов", Email = "admin1@example.com", Rights = Rights.FullAccess.ToString() },
-            new Admin { Name = "Петр Петров", Email = "admin2@example.com", Rights = Rights.ProductManageMent.ToString() },
-            new Admin { Name = "Сергей Сергеев", Email = "admin3@example.com", Rights = Rights.OrderManageMent.ToString() }
+            new Admin { Name = "Иван Иванов", Email = "admin1@example.com", Rights = RightsList.FullAccess.ToString() },
+            new Admin { Name = "Петр Петров", Email = "admin2@example.com", Rights = RightsList.ProductManageMent.ToString() },
+            new Admin { Name = "Сергей Сергеев", Email = "admin3@example.com", Rights = RightsList.OrderManageMent.ToString() }
         };
         context.Admins.AddRange(admins);
 
@@ -329,35 +330,36 @@ class Program
 
     public static void Main()
     {
-        //var context = new ShopDbContext();
-        //context.Database.EnsureCreated();
+        var context = new ShopDbContext();
+        context.Database.EnsureCreated();
         //GenerateTestData(context);
-        int isValidRole = 0;
-        int role;
-        string name;
-        Console.WriteLine("Выберите роль:");
-        Console.WriteLine("1 - Админ");
-        Console.WriteLine("2 - Пользователь");
-        Console.WriteLine("3 - Продавец");
-        while (isValidRole == 0)
-        {
-            Console.WriteLine("Введите роль:");
-            role = int.Parse(Console.ReadLine());
-            Console.WriteLine("Введите имя/название организации: ");
-            name = Console.ReadLine();
-            isValidRole = ConsoleRights(role, name);
-        }
-        switch (isValidRole)
-        {
-            case 1:
-                ConsoleAdmin();
-                break;
-            case 2:
-                ConsoleCustomer();
-                break;
-            case 3:
-                ConsoleSeller();
-                break;
-        }
+        OrderDbControler.Read(context);
+        //int isValidRole = 0;
+        //int role;
+        //string name;
+        //Console.WriteLine("Выберите роль:");
+        //Console.WriteLine("1 - Админ");
+        //Console.WriteLine("2 - Пользователь");
+        //Console.WriteLine("3 - Продавец");
+        //while (isValidRole == 0)
+        //{
+        //    Console.WriteLine("Введите роль:");
+        //    role = int.Parse(Console.ReadLine());
+        //    Console.WriteLine("Введите имя/название организации: ");
+        //    name = Console.ReadLine();
+        //    isValidRole = ConsoleRights(role, name);
+        //}
+        //switch (isValidRole)
+        //{
+        //    case 1:
+        //        ConsoleAdmin();
+        //        break;
+        //    case 2:
+        //        ConsoleCustomer();
+        //        break;
+        //    case 3:
+        //        ConsoleSeller();
+        //        break;
+        //}
     }
 }
