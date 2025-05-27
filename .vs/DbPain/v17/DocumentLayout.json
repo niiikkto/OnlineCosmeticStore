@@ -7,32 +7,8 @@
       "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\admindbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\admindbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\basketdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\basketdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\customerdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\customerdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\sellerdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\sellerdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\productdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\productdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\orderdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\orderdbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|c:\\users\\profo\\source\\repos\\dbpain\\dbpain\\db_controler\\dbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24895DE4-B2C8-4A07-AA2F-0112FA55B7AA}|DbPain\\DbPain.csproj|solutionrelative:dbpain\\db_controler\\dbcontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,98 +18,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 256,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProductDbControler.cs",
-              "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\ProductDbControler.cs",
-              "RelativeDocumentMoniker": "DbPain\\db_controler\\ProductDbControler.cs",
-              "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\ProductDbControler.cs",
-              "RelativeToolTip": "DbPain\\db_controler\\ProductDbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T20:00:09.959Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DbControler.cs",
-              "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\DbControler.cs",
-              "RelativeDocumentMoniker": "DbPain\\db_controler\\DbControler.cs",
-              "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\DbControler.cs",
-              "RelativeToolTip": "DbPain\\db_controler\\DbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T20:00:08.11Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CustomerDbControler.cs",
-              "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\CustomerDbControler.cs",
-              "RelativeDocumentMoniker": "DbPain\\db_controler\\CustomerDbControler.cs",
-              "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\CustomerDbControler.cs",
-              "RelativeToolTip": "DbPain\\db_controler\\CustomerDbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T19:53:43.867Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SellerDbControler.cs",
-              "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\SellerDbControler.cs",
-              "RelativeDocumentMoniker": "DbPain\\db_controler\\SellerDbControler.cs",
-              "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\SellerDbControler.cs",
-              "RelativeToolTip": "DbPain\\db_controler\\SellerDbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T19:53:42.917Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "OrderDbControler.cs",
-              "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\OrderDbControler.cs",
-              "RelativeDocumentMoniker": "DbPain\\db_controler\\OrderDbControler.cs",
-              "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\OrderDbControler.cs",
-              "RelativeToolTip": "DbPain\\db_controler\\OrderDbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T19:53:42.208Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "BasketDbControler.cs",
               "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\BasketDbControler.cs",
               "RelativeDocumentMoniker": "DbPain\\db_controler\\BasketDbControler.cs",
               "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\BasketDbControler.cs",
               "RelativeToolTip": "DbPain\\db_controler\\BasketDbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T19:53:41.312Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AdminDbControler.cs",
-              "DocumentMoniker": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\AdminDbControler.cs",
-              "RelativeDocumentMoniker": "DbPain\\db_controler\\AdminDbControler.cs",
-              "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\db_controler\\AdminDbControler.cs",
-              "RelativeToolTip": "DbPain\\db_controler\\AdminDbControler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T19:53:40.336Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-27T17:45:57.715Z"
             },
             {
               "$type": "Document",
@@ -143,7 +40,7 @@
               "RelativeDocumentMoniker": "DbPain\\Program.cs",
               "ToolTip": "C:\\Users\\Profo\\source\\repos\\DbPain\\DbPain\\Program.cs",
               "RelativeToolTip": "DbPain\\Program.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAgwEcAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAUwKYBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-22T05:53:52.813Z",
               "EditorCaption": ""

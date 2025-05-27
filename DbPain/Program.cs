@@ -1,393 +1,435 @@
 ﻿using DbPain.db_controler;
+using DbPain.db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-
-public class Admin
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Rights { get; set; }
-
-}
-
-public class PaymentMethod
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public List<Order> Orders { get; set; }
-}
-
-public class Seller
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string NumberPhone { get; set; }
-    public string Email { get; set; }
-    public List<Product> Products { get; set; }
-}
-
-public class Product
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public double Price { get; set; }
-    public int Quantity { get; set; }
-    public int SellerId { get; set; }
-    public Seller Seller { get; set; }
-}
-
-
-public class Basket
-{
-    public int Id { get; set; }
-    public int ProductId { get; set; }
-    public Product Product { get; set; }
-}
-
-public class Customer
-{
-    public int Id { get; set; }
-    public int BasketId { get; set; }
-    public string Name { get; set; }
-    public string NumberPhone { get; set; }
-    public string DeliveryAddress { get; set; }
-    public string Email { get; set; }
-    public Basket Basket { get; set; }
-    public List<Order> Orders { get; set; }
-}
-
-public class Order
-{
-    public int Id { get; set; }
-    public int CustomerId { get; set; }
-    public string DateOfCreation { get; set; }
-    public int Quantity { get; set; }
-    public int ProductId { get; set; }
-    public int PaymentMethodId { get; set; }
-    public string Status { get; set; }
-    public double PriceAll { get; set; }
-    public Customer Customer { get; set; }
-    public Product Product { get; set; }
-    public PaymentMethod PaymentMethod { get; set; }
-}
-
-public enum RightsList
-{
-    ProductManageMent,
-    OrderManageMent,
-    FullAccess,
-}
-
-public enum Status
-{
-    Issued,
-    OnTheWay,
-    Delivered,
-    Cancelled,
-}
-
-
-public class ShopDbContext : DbContext
-{
-    public DbSet<Admin> Admins { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<Basket> Baskets { get; set; }
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<PaymentMethod> PaymentMethods { get; set; }
-    public DbSet<Seller> Sellers { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql("Host=localhost;Database=magazinpg;Username=postgres;Password=1208339");
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        // Настройка связи One-to-Many
-        modelBuilder.Entity<Product>()
-            .HasOne(p => p.Seller) // У продукта есть одна категория
-            .WithMany(c => c.Products) // У категории много продуктов
-            .HasForeignKey(p => p.SellerId); // Внешний ключ
-
-        modelBuilder.Entity<Order>()
-            .HasOne(p => p.PaymentMethod) // У продукта есть одна категория
-            .WithMany(c => c.Orders) // У категории много продуктов
-            .HasForeignKey(p => p.PaymentMethodId); // Внешний ключ
-
-        modelBuilder.Entity<Order>()
-            .HasOne(p => p.Customer) // У продукта есть одна категория
-            .WithMany(c => c.Orders) // У категории много продуктов
-            .HasForeignKey(p => p.CustomerId); // Внешний ключ
-    }
-}
+using System.Data;
+using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 class Program
 {
-    public static void GenerateTestData(ShopDbContext context)
+    public static void ConsoleAdmin(ShopDbContext context, Admin admin)
     {
-        // Очистка базы данных перед генерацией новых данных
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
-
-        // Генерация администраторов
-        var admins = new[]
+        bool isExit = false;
+        while (isExit == false)
         {
-            new Admin { Name = "Иван Иванов", Email = "admin1@example.com", Rights = RightsList.FullAccess.ToString() },
-            new Admin { Name = "Петр Петров", Email = "admin2@example.com", Rights = RightsList.ProductManageMent.ToString() },
-            new Admin { Name = "Сергей Сергеев", Email = "admin3@example.com", Rights = RightsList.OrderManageMent.ToString() }
-        };
-        context.Admins.AddRange(admins);
+            Console.WriteLine("Выберите действие администратора:");
+            Console.WriteLine("1 - Просмотреть все товары");
+            Console.WriteLine("2 - Просмотреть все заказы");
+            Console.WriteLine("3 - Просмотреть всех продавцов");
+            Console.WriteLine("4 - Просмотреть всех покупателей");
+            Console.WriteLine("5 - Удалить товар");
+            Console.WriteLine("6 - Удалить заказ");
+            Console.WriteLine("7 - Удалить продавца");
+            Console.WriteLine("8 - Удалить покупателя");
+            Console.WriteLine("9 - Выйти");
 
-        // Генерация способов оплаты
-        var paymentMethods = new[]
-        {
-            new PaymentMethod { Name = "Наличные" },
-            new PaymentMethod { Name = "Кредитная карта" },
-            new PaymentMethod { Name = "Банковский перевод" },
-            new PaymentMethod { Name = "Электронный кошелек" }
-        };
-        context.PaymentMethods.AddRange(paymentMethods);
-
-        // Генерация продавцов
-        var sellers = new[]
-        {
-            new Seller { Name = "ООО ТехноМир", NumberPhone = "+79001234567", Email = "tech@example.com" },
-            new Seller { Name = "ИП Смирнов", NumberPhone = "+79007654321", Email = "smirnov@example.com" },
-            new Seller { Name = "ООО Электросила", NumberPhone = "+79009876543", Email = "electro@example.com" }
-        };
-        context.Sellers.AddRange(sellers);
-        context.SaveChanges(); // Сохраняем, чтобы получить ID
-
-        // Генерация продуктов
-        var products = new[]
-        {
-            new Product { Name = "Смартфон X10", Description = "Новый флагманский смартфон", Price = 59990, Quantity = 50, SellerId = sellers[0].Id },
-            new Product { Name = "Ноутбук ProBook", Description = "Мощный ноутбук для работы", Price = 89990, Quantity = 30, SellerId = sellers[0].Id },
-            new Product { Name = "Наушники Wireless", Description = "Беспроводные наушники с шумоподавлением", Price = 12990, Quantity = 100, SellerId = sellers[1].Id },
-            new Product { Name = "Умные часы V2", Description = "Фитнес-трекер с пульсометром", Price = 8990, Quantity = 75, SellerId = sellers[1].Id },
-            new Product { Name = "Планшет MediaPad", Description = "8-дюймовый планшет", Price = 24990, Quantity = 40, SellerId = sellers[2].Id },
-            new Product { Name = "Электронная книга", Description = "Читалка с E-Ink экраном", Price = 10990, Quantity = 60, SellerId = sellers[2].Id }
-        };
-        context.Products.AddRange(products);
-        context.SaveChanges();
-
-        // Генерация корзин
-        var baskets = new[]
-        {
-            new Basket { ProductId = products[0].Id },
-            new Basket { ProductId = products[1].Id },
-            new Basket { ProductId = products[2].Id },
-            new Basket { ProductId = products[3].Id },
-            new Basket { ProductId = products[4].Id }
-        };
-        context.Baskets.AddRange(baskets);
-        context.SaveChanges();
-
-        // Генерация покупателей
-        var customers = new[]
-        {
-            new Customer { Name = "Алексей Алексеев", NumberPhone = "+79161234567", DeliveryAddress = "ул. Ленина, д.10, кв.5", Email = "alex@example.com", BasketId = baskets[0].Id },
-            new Customer { Name = "Дмитрий Дмитриев", NumberPhone = "+79167654321", DeliveryAddress = "ул. Пушкина, д.15, кв.12", Email = "dmitry@example.com", BasketId = baskets[1].Id },
-            new Customer { Name = "Елена Еленова", NumberPhone = "+79169876543", DeliveryAddress = "пр. Мира, д.20, кв.7", Email = "elena@example.com", BasketId = baskets[2].Id }
-        };
-        context.Customers.AddRange(customers);
-        context.SaveChanges();
-
-        // Генерация заказов
-        var random = new Random();
-        var orders = new[]
-        {
-            new Order {
-                CustomerId = customers[0].Id,
-                DateOfCreation = DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd"),
-                Quantity = 1,
-                ProductId = products[0].Id,
-                PaymentMethodId = paymentMethods[1].Id,
-                Status = Status.Delivered.ToString(),
-                PriceAll = products[0].Price
-            },
-            new Order {
-                CustomerId = customers[0].Id,
-                DateOfCreation = DateTime.Now.AddDays(-3).ToString("yyyy-MM-dd"),
-                Quantity = 2,
-                ProductId = products[2].Id,
-                PaymentMethodId = paymentMethods[2].Id,
-                Status = Status.OnTheWay.ToString(),
-                PriceAll = products[2].Price * 2
-            },
-            new Order {
-                CustomerId = customers[1].Id,
-                DateOfCreation = DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd"),
-                Quantity = 1,
-                ProductId = products[1].Id,
-                PaymentMethodId = paymentMethods[0].Id,
-                Status = Status.Issued.ToString(),
-                PriceAll = products[1].Price
-            },
-            new Order {
-                CustomerId = customers[2].Id,
-                DateOfCreation = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"),
-                Quantity = 3,
-                ProductId = products[3].Id,
-                PaymentMethodId = paymentMethods[3].Id,
-                Status = Status.Cancelled.ToString(),
-                PriceAll = products[3].Price * 3
+            int chose;
+            if (!int.TryParse(Console.ReadLine(), out chose))
+            {
+                Console.WriteLine("Неверный ввод. Пожалуйста, введите число.");
+                continue;
             }
-        };
-        context.Orders.AddRange(orders);
 
-        // Сохранение всех изменений
-        context.SaveChanges();
-
-        Console.WriteLine("Тестовые данные успешно сгенерированы!");
-    }
-    
-
-    public static int ConsoleRights(int role, string name)
-    {
-        switch (role)
-        {
-            case 1:
-                if (true)
-                {
-                    return 1;
-                }
-                break;
-            case 2:
-                if (true)
-                {
-                    return 2;
-                }
-                break;
-            case 3:
-                if (true)
-                {
-                    return 3;
-                }
-                break;
-        }
-        return 0;
-    }
-
-
-
-
-    public static void ConsoleAdmin()
-    {
-        Console.WriteLine("Выберите действие администратора:");
-        Console.WriteLine("1 - Просмотреть все товары");
-        Console.WriteLine("2 - Просмотреть все заказы");
-        Console.WriteLine("3 - Просмотреть всех продавцов");
-        Console.WriteLine("4 - Просмотреть всех покупателей");
-        Console.WriteLine("5 - Удалить товар");
-        Console.WriteLine("6 - Удалить заказ");
-        Console.WriteLine("7 - Удалить продавца");
-        Console.WriteLine("8 - Удалить покупателя");
-        int chose = int.Parse(Console.ReadLine());
-        switch (chose)
-        {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
+            switch (chose)
+            {
+                case 1:
+                    ProductDbControler.Read(context);
+                    break;
+                case 2:
+                    OrderDbControler.Read(context);
+                    break;
+                case 3:
+                    SellerDbControler.Read(context);
+                    break;
+                case 4:
+                    CustomerDbControler.Read(context);
+                    break;
+                case 5:
+                    Console.WriteLine("Введите ID товара для удаления:");
+                    if (int.TryParse(Console.ReadLine(), out int productId))
+                    {
+                        ProductDbControler.Delete(context, productId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID товара.");
+                    }
+                    break;
+                case 6:
+                    Console.WriteLine("Введите ID заказа для удаления:");
+                    if (int.TryParse(Console.ReadLine(), out int orderId))
+                    {
+                        OrderDbControler.Delete(context, orderId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID заказа.");
+                    }
+                    break;
+                case 7:
+                    Console.WriteLine("Введите ID продавца для удаления:");
+                    if (int.TryParse(Console.ReadLine(), out int sellerId))
+                    {
+                        SellerDbControler.Delete(context, sellerId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID продавца.");
+                    }
+                    break;
+                case 8:
+                    Console.WriteLine("Введите ID покупателя для удаления:");
+                    if (int.TryParse(Console.ReadLine(), out int customerId))
+                    {
+                        CustomerDbControler.Delete(context, customerId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID покупателя.");
+                    }
+                    break;
+                case 9:
+                    isExit = true;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор. Пожалуйста, выберите от 1 до 9.");
+                    break;
+            }
         }
     }
 
-    public static void ConsoleSeller()
+    public static void ConsoleSeller(ShopDbContext context, Seller seller)
     {
-        Console.WriteLine("Выбертье действие за поставшика:");
-        Console.WriteLine("1 - Добавить товар на склад");
-        Console.WriteLine("2 - Убрать товар со склада");
-        Console.WriteLine("3 - Узнать сови данные");
-        Console.WriteLine("4 - Поменять данные совего товара");
-        int chose = int.Parse(Console.ReadLine());
-        switch (chose)
+        bool isExit = false;
+        while (isExit == false)
         {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
+            Console.WriteLine("Выберите действие поставщика:");
+            Console.WriteLine("1 - Добавить товар на склад");
+            Console.WriteLine("2 - Убрать товар со склада");
+            Console.WriteLine("3 - Узнать свои данные");
+            Console.WriteLine("4 - Поменять данные своего товара");
+            Console.WriteLine("5 - Выйти");
+
+            int chose;
+            if (!int.TryParse(Console.ReadLine(), out chose))
+            {
+                Console.WriteLine("Неверный ввод. Пожалуйста, введите число.");
+                continue;
+            }
+
+            switch (chose)
+            {
+                case 1:
+                    Console.WriteLine("Введите название товара:");
+                    string name = Console.ReadLine();
+                    Console.WriteLine("Введите описание товара:");
+                    string description = Console.ReadLine();
+                    Console.WriteLine("Введите цену товара:");
+                    if (double.TryParse(Console.ReadLine(), out double price))
+                    {
+                        Console.WriteLine("Введите количество товара:");
+                        if (int.TryParse(Console.ReadLine(), out int quantity))
+                        {
+                            ProductDbControler.Add(context, name, description, price, quantity, seller.Id);
+                            Console.WriteLine("Товар успешно добавлен!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверное количество.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверная цена.");
+                    }
+                    break;
+                case 2:
+                    ProductDbControler.Read(context);
+                    Console.WriteLine("Введите ID товара для удаления:");
+                    if (int.TryParse(Console.ReadLine(), out int productId))
+                    {
+                        ProductDbControler.Delete(context, productId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID товара.");
+                    }
+                    break;
+                case 3:
+                    Console.WriteLine($"Ваши данные:\nИмя: {seller.Name}\nТелефон: {seller.NumberPhone}\nEmail: {seller.Email}");
+                    break;
+                case 4:
+                    ProductDbControler.Read(context);
+                    Console.WriteLine("Введите ID товара для изменения:");
+                    if (int.TryParse(Console.ReadLine(), out int updateProductId))
+                    {
+                        Console.WriteLine("Введите новое название товара:");
+                        string newName = Console.ReadLine();
+                        Console.WriteLine("Введите новое описание товара:");
+                        string newDescription = Console.ReadLine();
+                        Console.WriteLine("Введите новую цену товара:");
+                        if (double.TryParse(Console.ReadLine(), out double newPrice))
+                        {
+                            Console.WriteLine("Введите новое количество товара:");
+                            if (int.TryParse(Console.ReadLine(), out int newQuantity))
+                            {
+                                ProductDbControler.Update(context, updateProductId, newName, newDescription, newPrice, newQuantity, seller.Id);
+                                Console.WriteLine("Товар успешно обновлен!");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Неверное количество.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверная цена.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID товара.");
+                    }
+                    break;
+                case 5:
+                    isExit = true;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор. Пожалуйста, выберите от 1 до 5.");
+                    break;
+            }
         }
     }
 
-    public static void ConsoleCustomer()
+    public static void ConsoleCustomer(ShopDbContext context, Customer customer)
     {
-        Console.WriteLine("Выбертье действие за пользователя:");
-        Console.WriteLine("1 - Добавить товар в корзину");
-        Console.WriteLine("2 - Убрать товар с корзины");
-        Console.WriteLine("3 - Узнать сови данные");
-        Console.WriteLine("4 - Оформить заказать товар");
-        Console.WriteLine("5 - Отменить заказ");
-        int chose = int.Parse(Console.ReadLine());
-        switch (chose)
+        bool isExit = false;
+        while (isExit == false)
         {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
+            Console.WriteLine("Выберите действие пользователя:");
+            Console.WriteLine("1 - Добавить товар в корзину");
+            Console.WriteLine("2 - Убрать товар из корзины");
+            Console.WriteLine("3 - Узнать свои данные");
+            Console.WriteLine("4 - Оформить заказ");
+            Console.WriteLine("5 - Отменить заказ");
+            Console.WriteLine("6 - Выйти");
+
+            int chose;
+            if (!int.TryParse(Console.ReadLine(), out chose))
+            {
+                Console.WriteLine("Неверный ввод. Пожалуйста, введите число.");
+                continue;
+            }
+
+            switch (chose)
+            {
+                case 1:
+                    ProductDbControler.Read(context);
+                    Console.WriteLine("Введите ID продукта:");
+                    if (int.TryParse(Console.ReadLine(), out int productId))
+                    {
+                        BasketDbControler.Add(context, productId);
+                        Console.WriteLine("Товар добавлен в корзину!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID продукта.");
+                    }
+                    break;
+                case 2:
+                    var customerBaskets = context.Baskets
+                        .Where(b => b.Id == customer.BasketId)
+                        .Include(b => b.Product)
+                        .ToList();
+
+                    if (customerBaskets.Any())
+                    {
+                        Console.WriteLine("Ваша корзина:");
+                        foreach (var basket in customerBaskets)
+                        {
+                            Console.WriteLine($"ID: {basket.Id}, Товар: {basket.Product.Name}");
+                        }
+
+                        Console.WriteLine("Введите ID товара для удаления из корзины:");
+                        if (int.TryParse(Console.ReadLine(), out int basketId))
+                        {
+                            BasketDbControler.Delete(context, basketId);
+                            Console.WriteLine("Товар удален из корзины!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверный ID товара.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ваша корзина пуста.");
+                    }
+                    break;
+                case 3:
+                    Console.WriteLine($"Ваши данные:\nИмя: {customer.Name}\nТелефон: {customer.NumberPhone}\nАдрес доставки: {customer.DeliveryAddress}\nEmail: {customer.Email}");
+                    break;
+                case 4:
+                    var baskets = context.Baskets
+                        .Where(b => b.Id == customer.BasketId)
+                        .Include(b => b.Product)
+                        .ToList();
+
+                    if (baskets.Any())
+                    {
+                        PaymentMethodDbControler.Read(context);
+                        Console.WriteLine("Выберите способ оплаты (введите ID):");
+                        if (int.TryParse(Console.ReadLine(), out int paymentMethodId))
+                        {
+                            double totalPrice = baskets.Sum(b => b.Product.Price);
+                            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+                            foreach (var basket in baskets)
+                            {
+                                OrderDbControler.Add(
+                                    context,
+                                    customer.Id,
+                                    currentDate,
+                                    1, // quantity
+                                    basket.ProductId,
+                                    paymentMethodId,
+                                    Status.Issued.ToString(),
+                                    basket.Product.Price
+                                );
+
+                                // Remove from basket after ordering
+                                BasketDbControler.Delete(context, basket.Id);
+                            }
+
+                            Console.WriteLine($"Заказ оформлен! Общая сумма: {totalPrice}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверный ID способа оплаты.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ваша корзина пуста. Невозможно оформить заказ.");
+                    }
+                    break;
+                case 5:
+                    OrderDbControler.Read(context);
+                    Console.WriteLine("Введите ID заказа для отмены:");
+                    if (int.TryParse(Console.ReadLine(), out int orderId))
+                    {
+                        var order = context.Orders.Find(orderId);
+                        if (order != null && order.CustomerId == customer.Id)
+                        {
+                            OrderDbControler.Delete(context, orderId);
+                            Console.WriteLine("Заказ отменен!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Заказ не найден или не принадлежит вам.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный ID заказа.");
+                    }
+                    break;
+                case 6:
+                    isExit = true;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор. Пожалуйста, выберите от 1 до 6.");
+                    break;
+            }
         }
     }
 
+    public static void Role(ShopDbContext context)
+    {
+        bool isNotExit = true;
+        while (isNotExit)
+        {
+            Console.WriteLine("Выберите роль:");
+            Console.WriteLine("1 - Админ");
+            Console.WriteLine("2 - Пользователь");
+            Console.WriteLine("3 - Продавец");
+            Console.WriteLine("4 - Выйти");
+
+            int role;
+            if (!int.TryParse(Console.ReadLine(), out role))
+            {
+                Console.WriteLine("Неверный ввод. Пожалуйста, введите число.");
+                continue;
+            }
+
+            string name;
+            string email;
+            switch (role)
+            {
+                case 1:
+                    Console.WriteLine("Введите имя");
+                    name = Console.ReadLine();
+                    Console.WriteLine("Введите почту");
+                    email = Console.ReadLine();
+                    Admin admin = context.Admins.FirstOrDefault(p => p.Name == name && p.Email == email);
+                    if (admin != null)
+                    {
+                        ConsoleAdmin(context, admin);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Админ не найден");
+                    }
+                    break;
+                case 2:
+                    Console.WriteLine("Введите имя");
+                    name = Console.ReadLine();
+                    Console.WriteLine("Введите почту");
+                    email = Console.ReadLine();
+                    var customer = context.Customers.FirstOrDefault(p => p.Name == name && p.Email == email);
+                    if (customer != null)
+                    {
+                        ConsoleCustomer(context, customer);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Пользователь не найден");
+                    }
+                    break;
+                case 3:
+                    Console.WriteLine("Введите имя");
+                    name = Console.ReadLine();
+                    Console.WriteLine("Введите почту");
+                    email = Console.ReadLine();
+                    var seller = context.Sellers.FirstOrDefault(p => p.Name == name && p.Email == email);
+                    if (seller != null)
+                    {
+                        ConsoleSeller(context, seller);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Продавец не найден");
+                    }
+                    break;
+                case 4:
+                    isNotExit = false;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор. Пожалуйста, выберите от 1 до 4.");
+                    break;
+            }
+        }
+    }
 
     public static void Main()
     {
         var context = new ShopDbContext();
         context.Database.EnsureCreated();
         //GenerateTestData(context);
-        OrderDbControler.Read(context);
-        //int isValidRole = 0;
-        //int role;
-        //string name;
-        //Console.WriteLine("Выберите роль:");
-        //Console.WriteLine("1 - Админ");
-        //Console.WriteLine("2 - Пользователь");
-        //Console.WriteLine("3 - Продавец");
-        //while (isValidRole == 0)
-        //{
-        //    Console.WriteLine("Введите роль:");
-        //    role = int.Parse(Console.ReadLine());
-        //    Console.WriteLine("Введите имя/название организации: ");
-        //    name = Console.ReadLine();
-        //    isValidRole = ConsoleRights(role, name);
-        //}
-        //switch (isValidRole)
-        //{
-        //    case 1:
-        //        ConsoleAdmin();
-        //        break;
-        //    case 2:
-        //        ConsoleCustomer();
-        //        break;
-        //    case 3:
-        //        ConsoleSeller();
-        //        break;
-        //}
+        CustomerDbControler.Read(context);
+        Role(context);
     }
 }
