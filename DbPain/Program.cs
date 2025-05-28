@@ -1,15 +1,16 @@
-﻿using DbPain.db_controler;
-using DbPain.db;
+﻿using DbPain.db;
+using DbPain.db_controler;
+using DbPain.server.AdminLogic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Data;
-using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System.Linq;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using DbPain.server;
 
 class Program
 {
+    private static BusinessLogicFacade _businessLogic;
+
     public static void ConsoleAdmin(ShopDbContext context, Admin admin)
     {
         bool isExit = false;
@@ -36,22 +37,25 @@ class Program
             switch (chose)
             {
                 case 1:
-                    ProductDbControler.Read(context);
+                    _businessLogic.ViewAllProducts();
                     break;
                 case 2:
-                    OrderDbControler.Read(context);
+                    _businessLogic.ViewAllOrders();
                     break;
                 case 3:
-                    SellerDbControler.Read(context);
+                    _businessLogic.ViewAllSellers();
                     break;
                 case 4:
-                    CustomerDbControler.Read(context);
+                    _businessLogic.ViewAllCustomers();
                     break;
                 case 5:
                     Console.WriteLine("Введите ID товара для удаления:");
                     if (int.TryParse(Console.ReadLine(), out int productId))
                     {
-                        ProductDbControler.Delete(context, productId);
+                        if (_businessLogic.DeleteProduct(productId))
+                            Console.WriteLine("Товар успешно удален!");
+                        else
+                            Console.WriteLine("Ошибка при удалении товара.");
                     }
                     else
                     {
@@ -62,7 +66,10 @@ class Program
                     Console.WriteLine("Введите ID заказа для удаления:");
                     if (int.TryParse(Console.ReadLine(), out int orderId))
                     {
-                        OrderDbControler.Delete(context, orderId);
+                        if (_businessLogic.DeleteOrder(orderId))
+                            Console.WriteLine("Заказ успешно удален!");
+                        else
+                            Console.WriteLine("Ошибка при удалении заказа.");
                     }
                     else
                     {
@@ -73,7 +80,10 @@ class Program
                     Console.WriteLine("Введите ID продавца для удаления:");
                     if (int.TryParse(Console.ReadLine(), out int sellerId))
                     {
-                        SellerDbControler.Delete(context, sellerId);
+                        if (_businessLogic.DeleteSeller(sellerId))
+                            Console.WriteLine("Продавец успешно удален!");
+                        else
+                            Console.WriteLine("Ошибка при удалении продавца.");
                     }
                     else
                     {
@@ -84,7 +94,10 @@ class Program
                     Console.WriteLine("Введите ID покупателя для удаления:");
                     if (int.TryParse(Console.ReadLine(), out int customerId))
                     {
-                        CustomerDbControler.Delete(context, customerId);
+                        if (_businessLogic.DeleteCustomer(customerId))
+                            Console.WriteLine("Покупатель успешно удален!");
+                        else
+                            Console.WriteLine("Ошибка при удалении покупателя.");
                     }
                     else
                     {
@@ -133,8 +146,10 @@ class Program
                         Console.WriteLine("Введите количество товара:");
                         if (int.TryParse(Console.ReadLine(), out int quantity))
                         {
-                            ProductDbControler.Add(context, name, description, price, quantity, seller.Id);
-                            Console.WriteLine("Товар успешно добавлен!");
+                            if (_businessLogic.AddProduct(name, description, price, quantity, seller.Id))
+                                Console.WriteLine("Товар успешно добавлен!");
+                            else
+                                Console.WriteLine("Ошибка при добавлении товара.");
                         }
                         else
                         {
@@ -147,11 +162,14 @@ class Program
                     }
                     break;
                 case 2:
-                    ProductDbControler.Read(context);
+                    _businessLogic.ViewAllProducts();
                     Console.WriteLine("Введите ID товара для удаления:");
                     if (int.TryParse(Console.ReadLine(), out int productId))
                     {
-                        ProductDbControler.Delete(context, productId);
+                        if (_businessLogic.DeleteProduct(productId))
+                            Console.WriteLine("Товар успешно удален!");
+                        else
+                            Console.WriteLine("Ошибка при удалении товара.");
                     }
                     else
                     {
@@ -159,10 +177,14 @@ class Program
                     }
                     break;
                 case 3:
-                    Console.WriteLine($"Ваши данные:\nИмя: {seller.Name}\nТелефон: {seller.NumberPhone}\nEmail: {seller.Email}");
+                    var sellerInfo = _businessLogic.GetSellerInfo(seller.Name, seller.Email);
+                    if (sellerInfo != null)
+                    {
+                        Console.WriteLine($"Ваши данные:\nИмя: {sellerInfo.Name}\nТелефон: {sellerInfo.NumberPhone}\nEmail: {sellerInfo.Email}");
+                    }
                     break;
                 case 4:
-                    ProductDbControler.Read(context);
+                    _businessLogic.ViewAllProducts();
                     Console.WriteLine("Введите ID товара для изменения:");
                     if (int.TryParse(Console.ReadLine(), out int updateProductId))
                     {
@@ -176,8 +198,10 @@ class Program
                             Console.WriteLine("Введите новое количество товара:");
                             if (int.TryParse(Console.ReadLine(), out int newQuantity))
                             {
-                                ProductDbControler.Update(context, updateProductId, newName, newDescription, newPrice, newQuantity, seller.Id);
-                                Console.WriteLine("Товар успешно обновлен!");
+                                if (_businessLogic.UpdateProduct(updateProductId, newName, newDescription, newPrice, newQuantity, seller.Id))
+                                    Console.WriteLine("Товар успешно обновлен!");
+                                else
+                                    Console.WriteLine("Ошибка при обновлении товара.");
                             }
                             else
                             {
@@ -227,12 +251,14 @@ class Program
             switch (chose)
             {
                 case 1:
-                    ProductDbControler.Read(context);
+                    _businessLogic.ViewAllProducts();
                     Console.WriteLine("Введите ID продукта:");
                     if (int.TryParse(Console.ReadLine(), out int productId))
                     {
-                        BasketDbControler.Add(context, productId);
-                        Console.WriteLine("Товар добавлен в корзину!");
+                        if (_businessLogic.AddToBasket(productId))
+                            Console.WriteLine("Товар добавлен в корзину!");
+                        else
+                            Console.WriteLine("Ошибка при добавлении товара в корзину.");
                     }
                     else
                     {
@@ -240,11 +266,7 @@ class Program
                     }
                     break;
                 case 2:
-                    var customerBaskets = context.Baskets
-                        .Where(b => b.Id == customer.BasketId)
-                        .Include(b => b.Product)
-                        .ToList();
-
+                    var customerBaskets = _businessLogic.GetCustomerBasket(customer.Id);
                     if (customerBaskets.Any())
                     {
                         Console.WriteLine("Ваша корзина:");
@@ -256,8 +278,10 @@ class Program
                         Console.WriteLine("Введите ID товара для удаления из корзины:");
                         if (int.TryParse(Console.ReadLine(), out int basketId))
                         {
-                            BasketDbControler.Delete(context, basketId);
-                            Console.WriteLine("Товар удален из корзины!");
+                            if (_businessLogic.RemoveFromBasket(basketId))
+                                Console.WriteLine("Товар удален из корзины!");
+                            else
+                                Console.WriteLine("Ошибка при удалении товара из корзины.");
                         }
                         else
                         {
@@ -270,14 +294,14 @@ class Program
                     }
                     break;
                 case 3:
-                    Console.WriteLine($"Ваши данные:\nИмя: {customer.Name}\nТелефон: {customer.NumberPhone}\nАдрес доставки: {customer.DeliveryAddress}\nEmail: {customer.Email}");
+                    var customerInfo = _businessLogic.GetCustomerInfo(customer.Name, customer.Email);
+                    if (customerInfo != null)
+                    {
+                        Console.WriteLine($"Ваши данные:\nИмя: {customerInfo.Name}\nТелефон: {customerInfo.NumberPhone}\nАдрес доставки: {customerInfo.DeliveryAddress}\nEmail: {customerInfo.Email}");
+                    }
                     break;
                 case 4:
-                    var baskets = context.Baskets
-                        .Where(b => b.Id == customer.BasketId)
-                        .Include(b => b.Product)
-                        .ToList();
-
+                    var baskets = _businessLogic.GetCustomerBasket(customer.Id);
                     if (baskets.Any())
                     {
                         PaymentMethodDbControler.Read(context);
@@ -285,26 +309,22 @@ class Program
                         if (int.TryParse(Console.ReadLine(), out int paymentMethodId))
                         {
                             double totalPrice = baskets.Sum(b => b.Product.Price);
-                            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            bool allOrdersCreated = true;
 
                             foreach (var basket in baskets)
                             {
-                                OrderDbControler.Add(
-                                    context,
-                                    customer.Id,
-                                    currentDate,
-                                    1, // quantity
-                                    basket.ProductId,
-                                    paymentMethodId,
-                                    Status.Issued.ToString(),
-                                    basket.Product.Price
-                                );
-
-                                // Remove from basket after ordering
-                                BasketDbControler.Delete(context, basket.Id);
+                                if (!_businessLogic.CreateOrder(customer.Id, basket.ProductId, paymentMethodId, basket.Product.Price))
+                                {
+                                    allOrdersCreated = false;
+                                    break;
+                                }
+                                _businessLogic.RemoveFromBasket(basket.Id);
                             }
 
-                            Console.WriteLine($"Заказ оформлен! Общая сумма: {totalPrice}");
+                            if (allOrdersCreated)
+                                Console.WriteLine($"Заказ оформлен! Общая сумма: {totalPrice}");
+                            else
+                                Console.WriteLine("Ошибка при оформлении заказа.");
                         }
                         else
                         {
@@ -317,24 +337,31 @@ class Program
                     }
                     break;
                 case 5:
-                    OrderDbControler.Read(context);
-                    Console.WriteLine("Введите ID заказа для отмены:");
-                    if (int.TryParse(Console.ReadLine(), out int orderId))
+                    var orders = _businessLogic.GetCustomerOrders(customer.Id);
+                    if (orders.Any())
                     {
-                        var order = context.Orders.Find(orderId);
-                        if (order != null && order.CustomerId == customer.Id)
+                        Console.WriteLine("Ваши заказы:");
+                        foreach (var order in orders)
                         {
-                            OrderDbControler.Delete(context, orderId);
-                            Console.WriteLine("Заказ отменен!");
+                            Console.WriteLine($"ID: {order.Id}, Товар: {order.Product.Name}, Статус: {order.Status}");
+                        }
+
+                        Console.WriteLine("Введите ID заказа для отмены:");
+                        if (int.TryParse(Console.ReadLine(), out int orderId))
+                        {
+                            if (_businessLogic.CancelOrder(orderId, customer.Id))
+                                Console.WriteLine("Заказ отменен!");
+                            else
+                                Console.WriteLine("Ошибка при отмене заказа.");
                         }
                         else
                         {
-                            Console.WriteLine("Заказ не найден или не принадлежит вам.");
+                            Console.WriteLine("Неверный ID заказа.");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Неверный ID заказа.");
+                        Console.WriteLine("У вас нет активных заказов.");
                     }
                     break;
                 case 6:
@@ -352,6 +379,8 @@ class Program
         bool isNotExit = true;
         while (isNotExit)
         {
+            CustomerDbControler.Read(context);
+
             Console.WriteLine("Выберите роль:");
             Console.WriteLine("1 - Админ");
             Console.WriteLine("2 - Пользователь");
@@ -374,7 +403,7 @@ class Program
                     name = Console.ReadLine();
                     Console.WriteLine("Введите почту");
                     email = Console.ReadLine();
-                    Admin admin = context.Admins.FirstOrDefault(p => p.Name == name && p.Email == email);
+                    var admin = _businessLogic.AuthenticateAdmin(name, email);
                     if (admin != null)
                     {
                         ConsoleAdmin(context, admin);
@@ -389,7 +418,7 @@ class Program
                     name = Console.ReadLine();
                     Console.WriteLine("Введите почту");
                     email = Console.ReadLine();
-                    var customer = context.Customers.FirstOrDefault(p => p.Name == name && p.Email == email);
+                    var customer = _businessLogic.AuthenticateCustomer(name, email);
                     if (customer != null)
                     {
                         ConsoleCustomer(context, customer);
@@ -404,7 +433,7 @@ class Program
                     name = Console.ReadLine();
                     Console.WriteLine("Введите почту");
                     email = Console.ReadLine();
-                    var seller = context.Sellers.FirstOrDefault(p => p.Name == name && p.Email == email);
+                    var seller = _businessLogic.AuthenticateSeller(name, email);
                     if (seller != null)
                     {
                         ConsoleSeller(context, seller);
@@ -428,8 +457,8 @@ class Program
     {
         var context = new ShopDbContext();
         context.Database.EnsureCreated();
+        _businessLogic = new BusinessLogicFacade(context);
         //GenerateTestData(context);
-        CustomerDbControler.Read(context);
         Role(context);
     }
 }

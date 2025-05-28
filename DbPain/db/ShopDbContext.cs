@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace DbPain.db
 {
-    internal class ShopDbContext : DbContext
+    public class ShopDbContext : DbContext
     {
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Product> Products { get; set; }

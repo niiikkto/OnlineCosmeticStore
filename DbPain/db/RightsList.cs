@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbPain.db
 {
-    internal enum RightsList
+    public enum RightsList
     {
         ProductManageMent,
         OrderManageMent,

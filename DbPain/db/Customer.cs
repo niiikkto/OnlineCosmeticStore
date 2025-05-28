@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbPain.db
 {
-    internal class Customer
+    public class Customer
     {
         public int Id { get; set; }
         public int BasketId { get; set; }

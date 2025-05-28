@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbPain.db
 {
-    internal class Admin
+    public class Admin
     {
         public int Id { get; set; }
         public string Name { get; set; }

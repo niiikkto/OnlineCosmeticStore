@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbPain.db
 {
-    internal enum Status
+    public enum Status
     {
         Issued,
         OnTheWay,
